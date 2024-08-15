@@ -1,7 +1,4 @@
-﻿
-using Catalog.API.Products.CreateProduct;
-
-namespace Catalog.API.Products.UpdateProduct
+﻿namespace Catalog.API.Features.Products.UpdateProduct
 {
     public record UpdateProductRequest(Guid Id, string Name, List<string> Category, string Description, string ImageFile, decimal Price);
 
@@ -11,7 +8,7 @@ namespace Catalog.API.Products.UpdateProduct
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/products", 
+            app.MapPut("/products",
                 async (UpdateProductRequest request, ISender sender) =>
                 {
                     var command = request.Adapt<UpdateProductCommand>();
