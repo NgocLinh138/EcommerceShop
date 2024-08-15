@@ -1,7 +1,4 @@
-﻿using BuildingBlocks.CQRS;
-using Catalog.API.Models;
-
-namespace Catalog.API.Products.GetProductsByCategory
+﻿namespace Catalog.API.Features.Products.GetProductsByCategory
 {
     public record GetProductsByCategoryQuery(string Category) : IQuery<GetProductsByCategoryResult>;
 
@@ -13,7 +10,7 @@ namespace Catalog.API.Products.GetProductsByCategory
         public async Task<GetProductsByCategoryResult> Handle(GetProductsByCategoryQuery query, CancellationToken cancellationToken)
         {
             logger.LogInformation("GetProductsByCategoryQueryHandler. Handle called with with {@Query}", query);
-            
+
             var products = await session.Query<Product>()
                 .Where(x => x.Category.Contains(query.Category))
                 .ToListAsync(cancellationToken);
