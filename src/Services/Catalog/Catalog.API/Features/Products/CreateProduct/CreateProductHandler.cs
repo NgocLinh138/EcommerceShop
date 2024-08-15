@@ -7,18 +7,12 @@
     public record CreateProductResult(Guid Id);
 
 
-    internal class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, CreateProductResult>
+    internal class CreateProductCommandHandler
+        (IDocumentSession session)
+        : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
-        private readonly IDocumentSession _session;
-
-        public CreateProductCommandHandler(IDocumentSession session)
-        {
-            _session = session ?? throw new ArgumentNullException(nameof(session));
-        }
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Handling command in CreateProductCommandHandler");
-
             var product = new Product
             {
                 Name = command.Name,
@@ -28,9 +22,8 @@
                 Price = command.Price
             };
 
-
-            _session.Store(product);
-            await _session.SaveChangesAsync(cancellationToken);
+            session.Store(product);
+            await session.SaveChangesAsync(cancellationToken);
 
             return new CreateProductResult(product.Id);
         }
