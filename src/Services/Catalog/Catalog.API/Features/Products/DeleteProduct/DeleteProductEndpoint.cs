@@ -16,6 +16,7 @@
                     return Results.Ok(response);
                 })
             .WithName("Delete Product")
+            .WithTags("Products")
             .Produces<DeleteProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status404NotFound)

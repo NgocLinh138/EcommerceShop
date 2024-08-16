@@ -23,6 +23,7 @@
 
                 })
             .WithName("CreateProduct")
+            .WithTags("Products")
             .Produces<CreateProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Create Product")

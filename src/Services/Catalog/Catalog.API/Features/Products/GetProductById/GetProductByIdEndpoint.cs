@@ -16,6 +16,7 @@
                     return Results.Ok(response);
                 })
                 .WithName("Get Product By Id")
+                .WithTags("Products")
                 .Produces<GetProductByIdResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status404NotFound)

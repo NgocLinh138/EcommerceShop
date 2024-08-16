@@ -16,6 +16,7 @@
                     return Results.Ok(response);
                 })
             .WithName("Get Products By Category")
+            .WithTags("Products")
             .Produces<GetProductsByCategoryResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Get Products By Category")
