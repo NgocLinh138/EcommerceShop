@@ -1,3 +1,7 @@
+using BuildingBlocks.Exceptions.Handler;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly;
@@ -13,7 +17,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(assembly);
     config.AddOpenBehavior(typeof(ValidationBehavior<, >));
-    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<, >));
 });
 
 
@@ -29,6 +33,27 @@ builder.Services.AddMarten(option =>
 builder.Services.AddEndpointsApiExplorer();  // Required for Swagger with minimal APIs
 builder.Services.AddSwaggerGen(); // Add Swagger
 
+
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
+
+
+// Redis
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+
+
+// Exception
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+// Health
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
+    .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
+
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -41,5 +66,13 @@ app.UseRouting();
 
 // Configure the HTTP request pipeline
 app.MapCarter();
+
+app.UseExceptionHandler(options => { });
+
+app.UseHealthChecks("/health",
+    new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    });
 
 app.Run();
