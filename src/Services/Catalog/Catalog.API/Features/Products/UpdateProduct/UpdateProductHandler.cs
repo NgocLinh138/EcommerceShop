@@ -1,6 +1,6 @@
 ﻿namespace Catalog.API.Features.Products.UpdateProduct
 {
-    public record UpdateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageFile, decimal Price)
+    public record UpdateProductCommand(Guid Id, string Name, Guid CategoryId, string Description, string ImageFile, decimal Price, int QuantityInStock)
         : ICommand<UpdateProductResult>;
 
     public record UpdateProductResult(bool IsSuccess);
@@ -18,10 +18,11 @@
             }
 
             product.Name = command.Name;
-            product.Category = command.Category;
+            product.CategoryId = command.CategoryId;
             product.Description = command.Description;
             product.ImageFile = command.ImageFile;
             product.Price = command.Price;
+            product.QuantityInStock = command.QuantityInStock;
 
             session.Update(product);
             await session.SaveChangesAsync(cancellationToken);

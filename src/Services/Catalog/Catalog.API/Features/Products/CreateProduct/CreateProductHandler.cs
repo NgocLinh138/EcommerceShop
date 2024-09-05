@@ -1,11 +1,12 @@
-﻿namespace Catalog.API.Features.Products.CreateProduct
-{
+﻿using Microsoft.AspNetCore.Http;
 
-    public record CreateProductCommand(string Name, List<string> Category, string Description, string ImageFile, decimal Price)
+namespace Catalog.API.Features.Products.CreateProduct
+{
+    public record CreateProductCommand(string Name, Guid CategoryId, string Description, string ImageFile, decimal Price, int QuantityInStock)
         : ICommand<CreateProductResult>;
 
-    public record CreateProductResult(Guid Id);
 
+    public record CreateProductResult(Guid Id);
 
     internal class CreateProductCommandHandler
         (IDocumentSession session)
@@ -13,13 +14,21 @@
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
+            var category = await session.LoadAsync<Category>(command.CategoryId, cancellationToken);
+            if (category == null)
+            {
+                throw new Exception("Category not found");
+            }
+
             var product = new Product
             {
                 Name = command.Name,
-                Category = command.Category,
+                CategoryId = command.CategoryId,
+                Category = category,
                 Description = command.Description,
                 ImageFile = command.ImageFile,
-                Price = command.Price
+                Price = command.Price,
+                QuantityInStock = command.QuantityInStock
             };
 
             session.Store(product);

@@ -1,8 +1,8 @@
 ﻿namespace Catalog.API.Features.Products.CreateProduct
 {
-    public record CreateProductRequest(string Name, List<string> Category, string Description, string ImageFile, decimal Price);
-
+    public record CreateProductRequest(string Name, Guid CategoryId, string Description, string ImageFile, decimal Price, int QuantityInStock);
     public record CreateProductResponse(Guid Id);
+
 
     public class CreateProductEndpoint : ICarterModule
     {
@@ -12,8 +12,6 @@
                 async (CreateProductRequest request, ISender sender) =>
                 {
                     var command = request.Adapt<CreateProductCommand>();
-                    Console.WriteLine($"Sending command: {command}");
-                    Console.WriteLine($"Sender: {sender}");
 
                     var result = await sender.Send(command);
 
@@ -22,7 +20,7 @@
                     return Results.Created($"/products/{response.Id}", response);
 
                 })
-            .WithName("CreateProduct")
+            .WithName("Create Product")
             .WithTags("Products")
             .Produces<CreateProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

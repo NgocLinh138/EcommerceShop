@@ -1,4 +1,5 @@
 using BuildingBlocks.Exceptions.Handler;
+using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -8,9 +9,10 @@ var assembly = typeof(Program).Assembly;
 
 // Add services to the container
 
+
+// Application Services
 // Carter
 builder.Services.AddCarter();
-
 
 // MediatR
 builder.Services.AddMediatR(config =>
@@ -21,6 +23,8 @@ builder.Services.AddMediatR(config =>
 });
 
 
+
+// Data Services
 // Marten
 builder.Services.AddMarten(option =>
 {
@@ -28,15 +32,12 @@ builder.Services.AddMarten(option =>
     option.Schema.For<ShoppingCart>().Identity(x => x.UserName);
 }).UseLightweightSessions();
 
-
 // Swagger
 builder.Services.AddEndpointsApiExplorer();  // Required for Swagger with minimal APIs
 builder.Services.AddSwaggerGen(); // Add Swagger
 
-
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
-
 
 // Redis
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -45,6 +46,26 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 
+
+// Grpc Services
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    };
+
+    return handler;
+});
+
+
+
+
+// Cross-cutting Services
 // Exception
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
