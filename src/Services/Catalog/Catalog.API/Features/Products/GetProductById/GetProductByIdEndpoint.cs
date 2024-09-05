@@ -15,13 +15,13 @@
 
                     return Results.Ok(response);
                 })
-                .WithName("Get Product By Id")
-                .WithTags("Products")
-                .Produces<GetProductByIdResponse>(StatusCodes.Status200OK)
-                .ProducesProblem(StatusCodes.Status400BadRequest)
-                .ProducesProblem(StatusCodes.Status404NotFound)
-                .WithSummary("Get Product By Id")
-                .WithDescription("Get Product By Id");
+            .WithName("Get Product By Id")
+            .WithTags("Products")
+            .Produces<GetProductByIdResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Get Product By Id")
+            .WithDescription("Get Product By Id");
         }
     }
 }

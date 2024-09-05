@@ -22,4 +22,6 @@ RUN dotnet publish "./Discount.Grpc.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/Certificates
+COPY ["Services/Discount/Discount.Grpc/Certificates/aspnetapp.pfx", "/app/Certificates"]
 ENTRYPOINT ["dotnet", "Discount.Grpc.dll"]

@@ -1,6 +1,6 @@
 ﻿namespace Catalog.API.Features.Products.UpdateProduct
 {
-    public record UpdateProductRequest(Guid Id, string Name, List<string> Category, string Description, string ImageFile, decimal Price);
+    public record UpdateProductRequest(Guid Id, string Name, Guid CategoryId, string Description, string ImageFile, decimal Price, int QuantityInStock);
 
     public record UpdateProductResponse(bool IsSuccess);
 

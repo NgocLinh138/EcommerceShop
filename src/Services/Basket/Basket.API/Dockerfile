@@ -23,4 +23,6 @@ RUN dotnet publish "./Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/Certificates
+COPY ["Services/Basket/Basket.API/Certificates/aspnetapp.pfx", "/app/Certificates"]
 ENTRYPOINT ["dotnet", "Basket.API.dll"]

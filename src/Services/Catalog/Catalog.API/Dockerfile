@@ -23,4 +23,6 @@ RUN dotnet publish "./Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/Certificates
+COPY ["Services/Catalog/Catalog.API/Certificates/aspnetapp.pfx", "/app/Certificates"]
 ENTRYPOINT ["dotnet", "Catalog.API.dll"]

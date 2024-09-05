@@ -1,5 +1,6 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Weasel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddCarter();
 builder.Services.AddMarten(opts =>
 {
     opts.Connection(builder.Configuration.GetConnectionString("Database")!);
+    opts.AutoCreateSchemaObjects = AutoCreate.All;
 }).UseLightweightSessions();
 
 if (builder.Environment.IsDevelopment())
